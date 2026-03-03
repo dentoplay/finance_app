@@ -1,6 +1,6 @@
-// Firebase config
+// Firebase config (ТВОИ реальные данные)
 const firebaseConfig = {
-  apiKey: "ТВОЙ_API_KEY",
+  apiKey: "AIzaSyBoiTckDNOeqLDCdNxhaWVpMiCXAk5qS-o",
   authDomain: "finance-zone-185a3.firebaseapp.com",
   projectId: "finance-zone-185a3",
   storageBucket: "finance-zone-185a3.appspot.com",
@@ -15,9 +15,14 @@ const db = firebase.firestore();
 let balance = 0;
 const limit = 6000;
 
+const history = document.getElementById("history");
+const balanceEl = document.getElementById("balance");
+const statusEl = document.getElementById("status");
+const box = document.querySelector(".balance-box");
+
 async function addTransaction() {
   const amount = parseFloat(document.getElementById("amount").value);
-  const category = document.getElementById("category").value;
+  const category = document.getElementById("category").value.trim();
   const type = document.getElementById("type").value;
 
   if (!amount || !category) {
@@ -32,46 +37,68 @@ async function addTransaction() {
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  loadTransactions();
+  document.getElementById("amount").value = "";
+  document.getElementById("category").value = "";
 }
 
-async function loadTransactions() {
-  const snapshot = await db.collection("transactions").orderBy("createdAt").get();
+// Удаление
+async function deleteTransaction(id) {
+  await db.collection("transactions").doc(id).delete();
+}
 
-  const history = document.getElementById("history");
-  history.innerHTML = "";
+// РЕАЛЬНОЕ ВРЕМЯ (авто обновление)
+db.collection("transactions")
+  .orderBy("createdAt", "desc")
+  .onSnapshot(snapshot => {
 
-  balance = 0;
+    history.innerHTML = "";
+    balance = 0;
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
+    snapshot.forEach(doc => {
+      const data = doc.data();
 
-    if (data.type === "income") {
-      balance += data.amount;
+      if (data.type === "income") {
+        balance += data.amount;
+      } else {
+        balance -= data.amount;
+      }
+
+      const div = document.createElement("div");
+      div.className = "transaction";
+
+      div.innerHTML = `
+        <div class="left">
+          <span class="type ${data.type}">
+            ${data.type === "income" ? "💰 Доход" : "💸 Расход"}
+          </span>
+          <div class="category">${data.category}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="right ${data.type}">
+            ${data.type === "income" ? "+" : "-"}${data.amount} ₽
+          </div>
+          <button class="delBtn">🗑</button>
+        </div>
+      `;
+
+      div.querySelector(".delBtn").addEventListener("click", () => {
+        deleteTransaction(doc.id);
+      });
+
+      history.appendChild(div);
+    });
+
+    balanceEl.innerText = balance;
+
+    if (balance > limit * 0.5) {
+      statusEl.innerText = "🟢 Финансовая зона безопасности";
+      box.style.background = "#0f5132";
+    } else if (balance > 0) {
+      statusEl.innerText = "🟡 Ты в зоне риска";
+      box.style.background = "#664d03";
     } else {
-      balance -= data.amount;
+      statusEl.innerText = "🔴 Превышен лимит!";
+      box.style.background = "#842029";
     }
 
-    const li = document.createElement("li");
-    li.innerText = `${data.type === "income" ? "+" : "-"} ${data.amount} ₽ | ${data.category}`;
-    history.appendChild(li);
   });
-
-  document.getElementById("balance").innerText = balance;
-
-  const status = document.getElementById("status");
-  const box = document.querySelector(".balance-box");
-
-  if (balance > limit * 0.5) {
-    status.innerText = "🟢 Финансовая зона безопасности";
-    box.style.background = "#0f5132";
-  } else if (balance > 0) {
-    status.innerText = "🟡 Ты в зоне риска";
-    box.style.background = "#664d03";
-  } else {
-    status.innerText = "🔴 Превышен лимит!";
-    box.style.background = "#842029";
-  }
-}
-
-loadTransactions();
