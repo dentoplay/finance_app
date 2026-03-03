@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Finance Zone</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<div class="container">
+    <h1>💰 Finance Zone</h1>
+
+    <div class="balance-box">
+        <h2>Баланс: <span id="balance">0</span> ₽</h2>
+        <p id="status"></p>
+    </div>
+
+    <div class="form">
+        <input type="number" id="amount" placeholder="Сумма">
+        <input type="text" id="category" placeholder="Категория">
+        <select id="type">
+            <option value="income">Доход</option>
+            <option value="expense">Расход</option>
+        </select>
+        <button onclick="addTransaction()">Добавить</button>
+    </div>
+
+    <ul id="history"></ul>
+</div>
+
+<script src="script.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+</body>
+</html>
