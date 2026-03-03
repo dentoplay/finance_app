@@ -10,28 +10,117 @@
 </head>
 
 <body>
-  <div class="container">
-    <h1>💰 Finance Zone</h1>
-
-    <div class="balance-box">
-      <h2>Баланс: <span id="balance">0</span> ₽</h2>
-      <p id="status">—</p>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">₿</div>
+      <div>
+        <div class="title">Money Tracker</div>
+        <div class="subtitle">Личный бюджет</div>
+      </div>
     </div>
 
-    <div class="form">
-      <input type="number" id="amount" placeholder="Сумма" />
-      <input type="text" id="category" placeholder="Категория (например: бензин)" />
+    <div class="actions">
+      <button class="btn ghost" id="btnExport">Экспорт</button>
+      <button class="btn" id="btnAddOpen">+ Транзакция</button>
+    </div>
+  </header>
 
-      <select id="type">
-        <option value="income">Доход</option>
-        <option value="expense">Расход</option>
-      </select>
+  <section class="grid">
+    <div class="card balance">
+      <div class="card-head">
+        <div>
+          <div class="label">Текущий баланс</div>
+          <div class="big" id="balanceValue">₪ 0</div>
+        </div>
+        <div class="pill" id="monthPill">Март</div>
+      </div>
 
-      <button id="addBtn">Добавить</button>
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Доход</div>
+          <div class="pos" id="incomeValue">+ ₪ 0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Расход</div>
+          <div class="neg" id="expenseValue">- ₪ 0</div>
+        </div>
+      </div>
     </div>
 
-    <div class="history" id="history"></div>
-  </div>
+    <div class="card quickadd" id="addPanel">
+      <div class="card-head">
+        <div class="h2">Добавить транзакцию</div>
+        <div class="hint">Быстро и удобно</div>
+      </div>
+
+      <div class="form">
+        <div class="field">
+          <label>Сумма</label>
+          <input id="amount" type="number" placeholder="Напр. 120" />
+        </div>
+
+        <div class="field">
+          <label>Тип</label>
+          <div class="segmented">
+            <button class="seg active" id="typeExpense" type="button">Расход</button>
+            <button class="seg" id="typeIncome" type="button">Доход</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Категория</label>
+          <select id="category">
+            <option>Еда</option>
+            <option>Транспорт</option>
+            <option>Подписки</option>
+            <option>Развлечения</option>
+            <option>Другое</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Комментарий</label>
+          <input id="note" type="text" placeholder="Напр. шаурма 😅" />
+        </div>
+
+        <button class="btn wide" id="addBtn">Добавить</button>
+      </div>
+    </div>
+
+    <div class="card history">
+      <div class="card-head row">
+        <div>
+          <div class="h2">История</div>
+          <div class="hint">Последние операции</div>
+        </div>
+
+        <div class="filters">
+          <input id="search" class="search" placeholder="Поиск..." />
+          <select id="filter">
+            <option value="all">Все</option>
+            <option value="income">Доход</option>
+            <option value="expense">Расход</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="list" id="list">
+        <!-- Транзакции рисуешь JS-ом -->
+        <!-- Пример айтема:
+        <div class="item">
+          <div class="icon neg">−</div>
+          <div class="meta">
+            <div class="name">Еда <span class="tag">шаурма</span></div>
+            <div class="date">03.03.2026</div>
+          </div>
+          <div class="sum neg">- ₪ 45</div>
+        </div>
+        -->
+      </div>
+    </div>
+  </section>
+</div>
 
   <!-- Firebase (compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
