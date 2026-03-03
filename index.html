@@ -7,6 +7,14 @@
 
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0b0f17">
+
+<!-- iPhone -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Finance Zone">
+
+<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 
 <body>
@@ -133,5 +141,12 @@
       navigator.serviceWorker.register("./service-worker.js");
     }
   </script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js')
+    .then(() => console.log("Service Worker registered"))
+    .catch(err => console.log("SW error:", err));
+}
+</script>
 </body>
 </html>
